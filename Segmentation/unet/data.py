@@ -1,6 +1,6 @@
 from __future__ import print_function
-from keras.preprocessing.image import ImageDataGenerator
-import numpy as np 
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import numpy as np
 import os
 import glob
 import skimage.io as io
@@ -256,3 +256,4 @@ def saveResult(save_path, npyfile, flag_multi_class=False, num_class=2):
         # imageio.imwrite('filename.jpg', img_uint8)
         # imageio.imwrite(os.path.join(save_path, "%d_predict.png" % i), img_uint8)
         # cv.imwrite(os.path.join(save_path, "%d_predict.png" % i), img_uint8)
+

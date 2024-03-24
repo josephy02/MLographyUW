@@ -1,9 +1,8 @@
-import numpy as np 
+import numpy as np
 import os
 import skimage.io as io
 import skimage.transform as trans
 import numpy as np
-from keras.utils import multi_gpu_model
 from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
@@ -11,7 +10,7 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras import backend as keras
 import tensorflow as tf
 from keras.applications.vgg16 import VGG16
-import keras.backend.tensorflow_backend as tfback
+import tensorflow.keras.backend as tfback
 
 # print("tf.__version__ is", tf.__version__)
 # print("tf.keras.__version__ is:", tf.keras.__version__)
@@ -109,15 +108,17 @@ def unet(pretrained_weights=None, input_size=(512, 512, 1), loss_func='binary_cr
 
     model = Model(input=inputs, output=conv10)
 
-    model.compile(optimizer=Adam(lr=1e-6), loss=loss_func, metrics=['accuracy'])
-    
+    # Use MirroredStrategy for multi-GPU training
+    strategy = tf.distribute.MirroredStrategy()
+    with strategy.scope():
+        model.compile(optimizer=Adam(lr=1e-6), loss=loss_func, metrics=['accuracy'])
+
     # model.summary()
 
     if(pretrained_weights):
         model.load_weights(pretrained_weights)
 
     return model
-
 
 
 def unet16(input_size=(512, 512, 3), loss_func='binary_crossentropy'):
@@ -184,6 +185,11 @@ def unet16(input_size=(512, 512, 3), loss_func='binary_crossentropy'):
     model = Model(input=input, output=conv10)
     # model.summary()
 
-    model.compile(optimizer=Adam(lr=1e-6), loss=loss_func, metrics=['accuracy'])
+    # Use MirroredStrategy for multi-GPU training
+    strategy = tf.distribute.MirroredStrategy()
+    with strategy.scope():
+        model.compile(optimizer=Adam(lr=1e-6), loss=loss_func, metrics=['accuracy'])
+
     return model
+
 
